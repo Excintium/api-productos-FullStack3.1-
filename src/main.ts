@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -8,7 +7,6 @@ async function bootstrap() {
 
   // Prefijo global
   app.setGlobalPrefix('api/v1');
-  //esto es para conectarnos con nuestra página
   app.enableCors();
   // Configuración de GlobalPipes
   app.useGlobalPipes(
