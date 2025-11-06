@@ -1,8 +1,10 @@
-// ... (imports)
-
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+// --- 1. IMPORTA EL MÓDULO DE PRODUCTOS ---
+import { ProductosModule } from './productos/productos.module';
 
 @Module({
   imports: [
@@ -11,15 +13,18 @@ import { Module } from '@nestjs/common';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST!, // <-- Añade el "!"
-      port: parseInt(process.env.DB_PORT!), // <-- Aquí también
-      username: process.env.DB_USERNAME!, // <-- Añade el "!" [cite: 78]
-      password: process.env.DB_PASSWORD!, // <-- Añade el "!" [cite: 79]
-      database: process.env.DB_NAME!, // <-- Añade el "!" [cite: 82]
+      host: process.env.DB_HOST!,
+      port: parseInt(process.env.DB_PORT!),
+      username: process.env.DB_USERNAME!,
+      password: process.env.DB_PASSWORD!,
+      database: process.env.DB_NAME!,
       autoLoadEntities: true,
       synchronize: true,
     }),
+    // --- 2. AÑADE EL MÓDULO AQUÍ ---
+    ProductosModule,
   ],
-  // ... (controllers y providers)
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

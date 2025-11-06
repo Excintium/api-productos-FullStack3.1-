@@ -28,6 +28,7 @@ export class CreateProductoDto {
   @Min(0)
   stock?: number;
 
+  // --- ESTOS CAMPOS ESTABAN FUERA DE LA CLASE ---
   @IsString()
   @IsOptional()
   @MaxLength(50)
@@ -36,4 +37,5 @@ export class CreateProductoDto {
   @IsBoolean()
   @IsOptional()
   activo?: boolean;
+  // ---------------------------------------------
 }
