@@ -1,0 +1,54 @@
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateProductoDto } from './dto/create-producto.dto';
+import { UpdateProductoDto } from './dto/update-producto.dto';
+import { Producto } from './entities/producto.entity';
+
+@Injectable()
+export class ProductosService {
+  constructor(
+    @InjectRepository(Producto)
+    private readonly productoRepository: Repository<Producto>,
+  ) {}
+
+  async create(createProductoDto: CreateProductoDto): Promise<Producto> {
+    try {
+      const producto = this.productoRepository.create(createProductoDto);
+      return await this.productoRepository.save(producto);
+    } catch (error) {
+      throw new BadRequestException('Error al crear el producto');
+    }
+  }
+
+  async findAll(): Promise<Producto[]> {
+    return await this.productoRepository.find();
+  }
+
+  async findOne(id: number): Promise<Producto> {
+    const producto = await this.productoRepository.findOneBy({ id });
+    if (!producto) {
+      // Corregí el error de la guía (IDid) por (`${id}`)
+      throw new NotFoundException(`Producto con ID ${id} no encontrado`);
+    }
+    return producto;
+  }
+
+  async update(
+    id: number,
+    updateProductoDto: UpdateProductoDto,
+  ): Promise<Producto> {
+    const producto = await this.findOne(id);
+    const productoActualizado = Object.assign(producto, updateProductoDto);
+    return await this.productoRepository.save(productoActualizado);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.findOne(id); // Verifica si el producto existe, si no, lanza 404
+    await this.productoRepository.softDelete(id); // <-- Usa softDelete en lugar de remove
+  }
+}
